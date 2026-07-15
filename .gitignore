@@ -1,0 +1,22 @@
+# dependencies and build output
+/node_modules
+/.next/
+/.vinext/
+/dist/
+/.wrangler/
+/coverage/
+
+# local environment and runtime files
+.env*
+!.env.example
+*.log
+
+# editor and operating-system files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# generated type declarations
+next-env.d.ts
+*.tsbuildinfo
