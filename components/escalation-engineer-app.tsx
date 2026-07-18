@@ -6,6 +6,7 @@ import { ticketToJson, ticketToMarkdown } from "@/lib/ticket-generation";
 import { validateEscalationDraft, type DraftErrors } from "@/lib/validation";
 import { transitionStatus } from "@/lib/workflow";
 import { createAiProvider } from "@/services/ai-provider";
+import type { AuthUser } from "@/lib/auth";
 import type {
   AiSettings,
   Attachment,
@@ -186,7 +187,7 @@ function EmptyState({
   );
 }
 
-export function EscalationEngineerApp() {
+export function EscalationEngineerApp({ user }: { user: AuthUser }) {
   const [screen, setScreen] = useState<Screen>("dashboard");
   const [navOpen, setNavOpen] = useState(false);
   const [escalations, setEscalations] = useState<Escalation[]>(() =>
@@ -205,6 +206,7 @@ export function EscalationEngineerApp() {
   const [analysisStage, setAnalysisStage] = useState(0);
   const [analysisError, setAnalysisError] = useState("");
   const [toast, setToast] = useState("");
+  const [signingOut, setSigningOut] = useState(false);
   const [detailTab, setDetailTab] = useState<"report" | "analysis" | "ticket">(
     "report",
   );
@@ -335,7 +337,7 @@ export function EscalationEngineerApp() {
       status,
       createdAt: now,
       updatedAt: now,
-      reporter: "Alex Morgan",
+      reporter: user.name,
     };
   }
 
@@ -462,6 +464,15 @@ export function EscalationEngineerApp() {
     );
   }
 
+  async function signOut() {
+    setSigningOut(true);
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } finally {
+      window.location.assign("/login");
+    }
+  }
+
   const pageMeta: Record<Screen, { title: string; description: string }> = {
     dashboard: {
       title: "Escalation command center",
@@ -578,12 +589,20 @@ export function EscalationEngineerApp() {
           </button>
         </div>
         <div className="user-card">
-          <Avatar name="Alex Morgan" />
-          <span>
-            <strong>Alex Morgan</strong>
-            <small>Support engineering</small>
+          <Avatar name={user.name} />
+          <span className="user-card-copy">
+            <strong>{user.name}</strong>
+            <small>{user.email}</small>
           </span>
-          <span className="presence" title="Online" />
+          <button
+            className="signout-button"
+            onClick={() => void signOut()}
+            disabled={signingOut}
+            aria-label="Sign out"
+            title="Sign out"
+          >
+            {signingOut ? "…" : "↪"}
+          </button>
         </div>
       </aside>
 
@@ -626,7 +645,7 @@ export function EscalationEngineerApp() {
             >
               <span aria-hidden="true">◌</span>
             </button>
-            <Avatar name="Alex Morgan" />
+            <Avatar name={user.name} />
           </div>
         </header>
 
@@ -634,6 +653,7 @@ export function EscalationEngineerApp() {
           {screen === "dashboard" ? (
             <Dashboard
               escalations={escalations}
+              userName={user.name}
               onOpen={showEscalation}
               onCreate={() => navigate("new")}
             />
@@ -746,10 +766,12 @@ export function EscalationEngineerApp() {
 
 function Dashboard({
   escalations,
+  userName,
   onOpen,
   onCreate,
 }: {
   escalations: Escalation[];
+  userName: string;
   onOpen: (id: string, target?: "detail" | "review") => void;
   onCreate: () => void;
 }) {
@@ -780,8 +802,8 @@ function Dashboard({
     <div className="screen-stack dashboard-screen">
       <div className="welcome-row">
         <div>
-          <p className="eyebrow">Tuesday, July 14</p>
-          <h2>Good evening, Alex.</h2>
+          <p className="eyebrow">Your workspace</p>
+          <h2>Welcome back, {userName.split(" ")[0]}.</h2>
           <p>
             {ready.length} ticket is ready for review and {active.length}{" "}
             escalations need attention.

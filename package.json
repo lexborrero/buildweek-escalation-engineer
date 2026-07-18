@@ -14,7 +14,7 @@
     "format:write": "prettier --write .",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next --ignore-pattern .vinext",
-    "test": "tsx --test tests/ticket-generation.test.ts tests/workflow.test.ts",
+    "test": "tsx --test tests/auth.test.ts tests/ticket-generation.test.ts tests/workflow.test.ts",
     "validate": "npm run format && npm run typecheck && npm run lint && npm run test && npm run build"
   },
   "dependencies": {

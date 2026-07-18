@@ -7,6 +7,8 @@ The project includes a complete local demo workflow, so no AI credential or repo
 ## What is included
 
 - Dashboard with open escalation counts, severity distribution, workflow status, and recent activity
+- Email/password sign-up and sign-in with protected app access and sign-out
+- Persistent D1 user accounts, login timestamps, and revocable server-side sessions
 - Validated escalation intake for customer impact, behavior, reproduction, logs, attachments, and repository selection
 - Read-only repository context with indexed files, code symbols, tests, documentation, and snapshot metadata
 - Multi-stage analysis experience with explicit privacy and repository-access boundaries
@@ -24,6 +26,7 @@ The project includes a complete local demo workflow, so no AI credential or repo
 - TypeScript 5.9
 - React 19 and Next.js-compatible App Router components
 - Vinext and Vite for a Cloudflare Worker-compatible production build
+- Cloudflare D1 for user and session persistence
 - Plain CSS design system with no runtime component dependency
 - Node test runner through `tsx`
 - ESLint and Prettier
@@ -87,14 +90,18 @@ The settings screen never persists or sends a browser-entered API key. Live-prov
 
 ```text
 app/
+  api/auth/                        Sign-up, sign-in, and sign-out route handlers
+  login/ and signup/               Account access pages
   layout.tsx                         Metadata and application shell document
   page.tsx                           Application entry
   globals.css                        Enterprise design system and responsive UI
 components/
+  auth-page.tsx                    Clean account access UI
   escalation-engineer-app.tsx       Screens, workflow orchestration, and interactions
 data/
   demo-data.ts                       Repository snapshots and realistic escalation fixtures
 lib/
+  auth.ts                           Password hashing, sessions, and user lookup
   repository-analysis.ts             Evidence ranking and hypothesis construction
   security.ts                        Sensitive-pattern redaction and excerpt limits
   ticket-generation.ts               Structured ticket and export generation
@@ -105,11 +112,25 @@ services/
 types/
   domain.ts                          Escalation, analysis, repository, and ticket models
 tests/
+  auth.test.ts                      Credential validation and password hashing
   ticket-generation.test.ts          Evidence, redaction, generation, and export tests
   workflow.test.ts                   Validation and critical state-flow tests
 worker/
   index.ts                           Cloudflare-compatible application entry
 ```
+
+### Authentication
+
+Accounts are stored in the configured Cloudflare D1 database. Passwords are
+PBKDF2-SHA-256 hashed with a unique salt before storage. Successful sign-in
+creates a random seven-day session token; only its SHA-256 hash is stored in
+the database, while the browser receives an `HttpOnly`, `SameSite=Lax` cookie.
+The dashboard is server-protected and unauthenticated visitors are sent to the
+login page.
+
+The D1 schema is defined in `db/schema.ts` and the deployment migration is in
+`drizzle/0000_auth.sql`. Local development initializes the same schema through
+prepared D1 statements.
 
 ### Core data flow
 
@@ -165,7 +186,7 @@ For the fastest walkthrough:
 
 ## Current limitations
 
-- State is session-local and resets on refresh; there is no authentication or multi-tenant database yet.
+- Escalation workflow state is still session-local and resets on refresh; user accounts and login sessions are persistent.
 - Repository content is represented by curated demo snapshots rather than a GitHub/GitLab installation.
 - The demo matcher is deterministic and does not call a large language model.
 - Attachment contents are not uploaded, parsed, or retained.
@@ -174,7 +195,7 @@ For the fastest walkthrough:
 
 ## Recommended next steps
 
-1. Add organization-scoped authentication, RBAC, and an append-only audit log.
+1. Add organizations, role-based access control, and an append-only audit log.
 2. Persist escalations, analysis runs, evidence, revisions, and ticket status history in a tenant-aware database.
 3. Add a read-only GitHub App with allowlisted repositories, ref pinning, secret scanning, and incremental indexing.
 4. Implement a server-side AI adapter with structured output validation, provider timeouts, cost controls, and prompt/version observability.
