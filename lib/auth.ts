@@ -2,7 +2,9 @@ import { cookies } from "next/headers";
 
 export const SESSION_COOKIE = "ee_session";
 export const SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 7;
-const PASSWORD_ITERATIONS = 210_000;
+// The deployed Workers Web Crypto implementation rejects PBKDF2 counts above
+// 100,000, so keep the persisted policy at the platform's supported maximum.
+export const PASSWORD_ITERATIONS = 100_000;
 const encoder = new TextEncoder();
 
 export type AuthUser = {
@@ -57,6 +59,11 @@ export async function hashPassword(
   salt = randomToken(16),
   iterations = PASSWORD_ITERATIONS,
 ): Promise<{ hash: string; salt: string; iterations: number }> {
+  if (!Number.isInteger(iterations) || iterations < 1 || iterations > 100_000) {
+    throw new RangeError(
+      "Password iteration count must be between 1 and 100,000.",
+    );
+  }
   const key = await crypto.subtle.importKey(
     "raw",
     encoder.encode(password),

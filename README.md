@@ -1,6 +1,6 @@
-# Escalation Engineer
+# DevRelay
 
-Escalation Engineer is a working B2B SaaS MVP that turns customer escalation reports into structured, implementation-ready engineering tickets. It analyzes a sanitized report against a read-only repository snapshot, cites relevant paths and symbols, labels root-cause claims as hypotheses, and keeps a human approval step before engineering handoff.
+DevRelay is a working B2B SaaS MVP that turns customer escalation reports into structured, implementation-ready engineering tickets. It analyzes a sanitized report against a read-only repository snapshot, cites relevant paths and symbols, labels root-cause claims as hypotheses, and keeps a human approval step before engineering handoff.
 
 The project includes a complete local demo workflow, so no AI credential or repository integration is required.
 

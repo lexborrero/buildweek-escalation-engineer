@@ -1,5 +1,5 @@
 {
-  "name": "escalation-engineer",
+  "name": "devrelay",
   "version": "0.1.0",
   "private": true,
   "description": "Repository-aware customer escalation to engineering ticket workflow.",

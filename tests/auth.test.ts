@@ -3,6 +3,7 @@ import test from "node:test";
 import {
   hashPassword,
   normalizeEmail,
+  PASSWORD_ITERATIONS,
   validateCredentials,
   verifyPassword,
 } from "../lib/auth";
@@ -57,4 +58,10 @@ test("hashes and verifies passwords without storing the password", async () => {
     ),
     false,
   );
+});
+
+test("keeps the password policy within the deployed Web Crypto limit", async () => {
+  assert.equal(PASSWORD_ITERATIONS, 100_000);
+  const stored = await hashPassword("a secure password");
+  assert.equal(stored.iterations, 100_000);
 });

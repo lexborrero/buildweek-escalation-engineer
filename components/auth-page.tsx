@@ -60,12 +60,12 @@ export function AuthPage({ initialMode = "login" }: { initialMode?: Mode }) {
 
   return (
     <main className="auth-shell">
-      <section className="auth-story" aria-label="About Escalation Engineer">
+      <section className="auth-story" aria-label="About DevRelay">
         <div className="auth-brand">
-          <span className="brand-mark">E</span>
+          <span className="brand-mark">D</span>
           <span>
-            <strong>Escalation</strong>
-            <small>ENGINEER</small>
+            <strong>DevRelay</strong>
+            <small>SIGNAL TO ACTION</small>
           </span>
         </div>
         <div className="auth-story-copy">
@@ -95,17 +95,15 @@ export function AuthPage({ initialMode = "login" }: { initialMode?: Mode }) {
       <section className="auth-panel">
         <div className="auth-card">
           <div className="auth-mobile-brand">
-            <span className="brand-mark">E</span>
-            <strong>Escalation Engineer</strong>
+            <span className="brand-mark">D</span>
+            <strong>DevRelay</strong>
           </div>
           <div className="auth-heading">
             <p className="eyebrow">
               {isSignup ? "Create your workspace account" : "Welcome back"}
             </p>
             <h2>
-              {isSignup
-                ? "Start with Escalation Engineer"
-                : "Sign in to your account"}
+              {isSignup ? "Start with DevRelay" : "Sign in to your account"}
             </h2>
             <p>
               {isSignup
@@ -220,9 +218,7 @@ export function AuthPage({ initialMode = "login" }: { initialMode?: Mode }) {
           </form>
 
           <p className="auth-alternate">
-            {isSignup
-              ? "Already have an account?"
-              : "New to Escalation Engineer?"}{" "}
+            {isSignup ? "Already have an account?" : "New to DevRelay?"}{" "}
             <button
               type="button"
               onClick={() => changeMode(isSignup ? "login" : "signup")}

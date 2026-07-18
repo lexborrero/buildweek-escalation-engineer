@@ -17,28 +17,28 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     metadataBase: new URL(origin),
-    title: "Escalation Engineer",
+    title: "DevRelay",
     description:
       "Turn customer escalations into repository-backed engineering tickets.",
     openGraph: {
-      title: "Escalation Engineer",
+      title: "DevRelay",
       description: "Repository evidence. Engineering-ready tickets.",
       type: "website",
       url: origin,
       images: [
         {
-          url: `${origin}/og.png`,
-          width: 1200,
-          height: 630,
-          alt: "Escalation Engineer turns escalation reports and repository evidence into engineering-ready tickets.",
+          url: `${origin}/og-devrelay.png`,
+          width: 1730,
+          height: 909,
+          alt: "DevRelay turns customer signals and repository evidence into engineering-ready action.",
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: "Escalation Engineer",
+      title: "DevRelay",
       description: "Repository evidence. Engineering-ready tickets.",
-      images: [`${origin}/og.png`],
+      images: [`${origin}/og-devrelay.png`],
     },
   };
 }

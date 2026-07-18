@@ -525,10 +525,10 @@ export function EscalationEngineerApp({ user }: { user: AuthUser }) {
             onClick={() => navigate("dashboard")}
             aria-label="Home"
           >
-            <span className="brand-mark">E</span>
+            <span className="brand-mark">D</span>
             <span>
-              <strong>Escalation</strong>
-              <small>ENGINEER</small>
+              <strong>DevRelay</strong>
+              <small>SIGNAL TO ACTION</small>
             </span>
           </button>
           <button
